@@ -26,6 +26,7 @@ class MyColors {
     Color(0xFFF29CDF), // #F29CDF (Light Pink)
     Color(0xFF9AD3E3), // #9AD3E3 (Light Blue)
   ];
+  
   static Color getRandomColor() {
     final Random random = Random();
     return colors[random.nextInt(colors.length)];

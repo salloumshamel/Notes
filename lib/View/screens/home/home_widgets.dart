@@ -1,5 +1,4 @@
 // ignore_for_file: depend_on_referenced_packages
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -29,7 +28,8 @@ Widget taskWidget(BuildContext context, Note task) {
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
                 fontSize: 18,
-                fontWeight: FontWeight.w500,
+                fontFamily: 'work',
+                fontWeight: FontWeight.bold,
                 decoration: task.isComplete
                     ? TextDecoration.lineThrough
                     : TextDecoration.none),

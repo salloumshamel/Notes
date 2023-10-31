@@ -10,7 +10,7 @@ class NoteProvider extends ChangeNotifier {
   Future<void> initialize() async {
     try {
       await _databaseService.initialize();
-      await updateNotes();
+      updateNotes();
     } catch (e) {
       log('Error initializing NoteProvider: $e');
     }
@@ -19,7 +19,7 @@ class NoteProvider extends ChangeNotifier {
   Future<int> insertNote(Note note) async {
     try {
       int id = await _databaseService.insertNote(note);
-      await updateNotes();
+      updateNotes();
       return id;
     } catch (e) {
       log('Error inserting note: $e');
@@ -30,23 +30,33 @@ class NoteProvider extends ChangeNotifier {
   Future<void> deleteNote(Note note) async {
     try {
       await _databaseService.deleteNote(note);
-      await updateNotes();
+      updateNotes();
     } catch (e) {
       log('Error deleting note: $e');
     }
   }
 
-  Future<void> updateNoteColor(Note note) async {
-    await _databaseService.updateNote(note, false);
-    await updateNotes();
-  }
-
-  Future<void> updateNote(Note note) async {
+  Future<void> updateNote(
+    Note note,
+  ) async {
     try {
-      await _databaseService.updateNote(note, true);
-      await updateNotes();
+      if (note.title.isNotEmpty) {
+        await _databaseService.updateNote(note);
+        updateNotes();
+      } else {
+        await deleteNote(note);
+      }
     } catch (e) {
       log('Error updating note: $e');
+    }
+  }
+
+  Future<void> colorUpdate(Note note) async {
+    try {
+      await _databaseService.updateNote(note);
+      updateNotes();
+    } catch (e) {
+      colorUpdate(note);
     }
   }
 
@@ -59,14 +69,21 @@ class NoteProvider extends ChangeNotifier {
   }
 
   Note getNoteById(int id) {
-    return notes.firstWhere((element) => element.id == id);
+    Note note = notes.firstWhere((element) => element.id == id,
+        orElse: () => notes.last);
+    return note;
+  }
+
+  void insertTempNote(Note note) {
+    notes.add(note);
   }
 
   Future<void> updateNotes() async {
-    List<Note> backup = List.from(notes);
+    List<Note> backup = [...notes];
     try {
       List<Note> temp = await _databaseService.getAllNotes();
       notes = [...temp];
+      notes.map((e) => log(e.id.toString()));
     } catch (e) {
       notes = [...backup];
       log('Error updating notes list: $e');

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +27,7 @@ class HomePage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.transparent,
-        elevation: 0.0,
+        elevation: 1.0,
         shape: const CircleBorder(
           eccentricity: 0.2,
           side: BorderSide(width: 1, color: Colors.white),
@@ -47,7 +48,6 @@ class HomePage extends StatelessWidget {
 
   void _handleAddNote(BuildContext context) async {
     final provider = Provider.of<NoteProvider>(context, listen: false);
-
     Note emptyNote = Note(
       title: '',
       description: '',
@@ -58,26 +58,28 @@ class HomePage extends StatelessWidget {
     );
 
     final value = await provider.insertNote(emptyNote);
-    log(value.toString());
-
     if (value != 0) {
       Navigator.pushNamed(context, '/note', arguments: value);
     }
   }
 
   Widget _buildNoteList(BuildContext context) {
-    return Consumer<NoteProvider>(
-      builder: (context, value, child) {
-        if (value.notes.isNotEmpty) {
+    return Selector<NoteProvider, List<Note>>(
+      selector: (context, value) => value.notes,
+      shouldRebuild: (prev, next) =>
+          !listEquals(prev, next) && next.last.title.isNotEmpty,
+      builder: (context, notes, child) {
+        log('rebuild me');
+        if (notes.isNotEmpty) {
           return MasonryGridView.count(
             crossAxisCount: 2,
             mainAxisSpacing: 8,
             crossAxisSpacing: 8,
             padding: const EdgeInsets.all(8),
-            itemCount: value.notes.length,
+            itemCount: notes.length,
             itemBuilder: (context, index) {
-              log('$index ');
-              return taskWidget(context, value.notes[index]);
+              log(notes[index].title);
+              return taskWidget(context, notes[index]);
             },
           );
         } else {

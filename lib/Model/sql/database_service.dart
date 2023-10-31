@@ -68,14 +68,8 @@ class DatabaseService {
     }
   }
 
-  Future<bool> updateNote(Note note, bool isColor) async {
+  Future<bool> updateNote(Note note) async {
     try {
-      // to handle empty notes
-      if (note.title.isEmpty && note.description.isEmpty && !isColor) {
-        await deleteNote(note);
-        return false;
-      }
-
       await _database.update(
           'Note',
           {
@@ -101,6 +95,27 @@ class DatabaseService {
     } catch (e) {
       log('something went wrong (delete task) $e');
       return false;
+    }
+  }
+
+  Future<Note?> getNoteById(int id) async {
+    try {
+      final List<Map<String, dynamic>> maps = await _database.query('Note', where: 'id = ?', whereArgs: [id]);
+      if (maps.isNotEmpty) {
+        return Note(
+          id: maps[0]['id'],
+          title: maps[0]['title'],
+          description: maps[0]['description'],
+          date: DateTime.parse(maps[0]['date']),
+          color: Color(maps[0]['color']),
+          isComplete: maps[0]['isComplete'] == 1,
+        );
+      } else {
+        return null; 
+      }
+    } catch (e) {
+      log('Error retrieving note: $e');
+      return null; 
     }
   }
 

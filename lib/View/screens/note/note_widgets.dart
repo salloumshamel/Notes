@@ -36,9 +36,7 @@ Future<void> taskThemeBottomSheet(BuildContext context, Note note) {
               return GestureDetector(
                 onTap: () {
                   note.color = MyColors.colors[index];
-                  provider.updateNote(
-                    note,
-                  );
+                  provider.colorUpdate(note);
                 },
                 child: Container(
                   width: 80,

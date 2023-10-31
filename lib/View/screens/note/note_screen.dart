@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:snotes/Controller/note_provider.dart';
@@ -17,12 +15,12 @@ class NoteScreen extends StatelessWidget {
     return Consumer<NoteProvider>(
       builder: (context, provider, child) {
         Note note = provider.getNoteById(id);
-        log('my id is ' + note.id.toString());
+
         titleController.text = note.title;
         descriptionController.text = note.description;
         return WillPopScope(
           onWillPop: () async {
-            _updateTD(note, provider);
+            _updateTD(note, provider, false);
             return true;
           },
           child: Scaffold(
@@ -33,9 +31,9 @@ class NoteScreen extends StatelessWidget {
               forceMaterialTransparency: true,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-                onPressed: () {
-                  _updateTD(note, provider);
-                  Navigator.of(context).pop();
+                onPressed: () async {
+                  Navigator.pop(context);
+                  await _updateTD(note, provider, false);
                 },
               ),
               actions: [
@@ -74,9 +72,10 @@ class NoteScreen extends StatelessWidget {
     );
   }
 
-  void _updateTD(Note note, NoteProvider provider) {
+  Future<void> _updateTD(
+      Note note, NoteProvider provider, bool isColorUpdate) async {
     note.title = titleController.text;
     note.description = descriptionController.text;
-    provider.updateNote(note);
+    await provider.updateNote(note);
   }
 }
