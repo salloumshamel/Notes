@@ -31,7 +31,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'SNotes',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
@@ -40,7 +40,7 @@ class _MyAppState extends State<MyApp> {
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case '/':
-            return MaterialPageRoute(builder: (context) => HomePage());
+            return MaterialPageRoute(builder: (context) => const HomePage());
           case '/note':
             int id = settings.arguments as int;
             return MaterialPageRoute(
@@ -48,7 +48,7 @@ class _MyAppState extends State<MyApp> {
                       id: id,
                     ));
           default:
-            return MaterialPageRoute(builder: (context) => HomePage());
+            return MaterialPageRoute(builder: (context) => const HomePage());
         }
       },
     );
