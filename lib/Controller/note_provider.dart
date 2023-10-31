@@ -36,9 +36,14 @@ class NoteProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> updateNoteColor(Note note) async {
+    await _databaseService.updateNote(note, false);
+    await updateNotes();
+  }
+
   Future<void> updateNote(Note note) async {
     try {
-      await _databaseService.updateNote(note);
+      await _databaseService.updateNote(note, true);
       await updateNotes();
     } catch (e) {
       log('Error updating note: $e');

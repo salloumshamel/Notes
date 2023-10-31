@@ -68,10 +68,10 @@ class DatabaseService {
     }
   }
 
-  Future<bool> updateNote(Note note) async {
+  Future<bool> updateNote(Note note, bool isColor) async {
     try {
       // to handle empty notes
-      if (note.title.isEmpty && note.description.isEmpty) {
+      if (note.title.isEmpty && note.description.isEmpty && !isColor) {
         await deleteNote(note);
         return false;
       }

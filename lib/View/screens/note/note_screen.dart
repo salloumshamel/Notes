@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:snotes/Controller/note_provider.dart';
@@ -8,13 +10,14 @@ class NoteScreen extends StatelessWidget {
   final int id;
   NoteScreen({Key? key, required this.id}) : super(key: key);
   final TextEditingController titleController = TextEditingController(text: '');
-  final TextEditingController descriptionController = TextEditingController(text: '');
-
+  final TextEditingController descriptionController =
+      TextEditingController(text: '');
   @override
   Widget build(BuildContext context) {
     return Consumer<NoteProvider>(
       builder: (context, provider, child) {
         Note note = provider.getNoteById(id);
+        log('my id is ' + note.id.toString());
         titleController.text = note.title;
         descriptionController.text = note.description;
         return WillPopScope(
