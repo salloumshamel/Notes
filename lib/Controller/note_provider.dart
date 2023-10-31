@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:snotes/Controller/theme_provider.dart';
 import 'package:snotes/Model/classes/note.dart';
 import 'package:snotes/Model/sql/database_service.dart';
 
@@ -68,10 +69,11 @@ class NoteProvider extends ChangeNotifier {
     }
   }
 
-  Note getNoteById(int id) {
-    Note note = notes.firstWhere((element) => element.id == id,
-        orElse: () => notes.last);
-    return note;
+  Note? getNoteById(int id) {
+    for (var note in notes) {
+      if (note.id == id) return note;
+    }
+    return null;
   }
 
   void insertTempNote(Note note) {

@@ -14,10 +14,16 @@ class NoteScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<NoteProvider>(
       builder: (context, provider, child) {
-        Note note = provider.getNoteById(id);
 
+        Note? note = provider.getNoteById(id);
+        
+        if (note == null) {
+          return const SizedBox();
+        }
+        
         titleController.text = note.title;
         descriptionController.text = note.description;
+        
         return WillPopScope(
           onWillPop: () async {
             _updateTD(note, provider, false);
